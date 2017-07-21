@@ -5,10 +5,10 @@ from django.shortcuts import render
 # python object_size.py --image images/example_01.png --width 0.955
 # python object_size.py --image images/example_02.png --width 0.955
 # python object_size.py --image images/example_03.png --width 3.5
-
-import the necessary packages
 import sys
 sys.path.append('/usr/local/lib/python2.7/site-packages')
+#import the necessary packages
+
 from scipy.spatial import distance as dist
 from imutils import perspective
 from imutils import contours
@@ -75,7 +75,7 @@ def fun(request):
 		x = json.loads(request.body)
 		topimageurl = x['url1']
 		frontimageurl = x['url2']
-		load the image, convert it to grayscale, and blur it slightly
+		#load the image, convert it to grayscale, and blur it slightly
 		imagetop = url_to_image(topimageurl)
 		detect_coin = imagetop.copy()
 		gray = cv2.cvtColor(detect_coin, cv2.COLOR_BGR2GRAY)
@@ -236,6 +236,7 @@ def fun(request):
 		elif(length<48 and width<40 and height<39):
 			boxNAme = 'Box 7'
 		box = {'boxName' = boxName}
+
 		responseobj = json.dumps(box, indent = 4)
 		return HttpResponse(responseobj,content_type = "application/json")
 
