@@ -1,0 +1,3 @@
+entrypoint: python manage.py runserver
+env: flex
+runtime: python
