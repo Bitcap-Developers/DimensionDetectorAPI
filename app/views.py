@@ -235,10 +235,14 @@ def fun(request):
 			boxNAme = 'Box 6'
 		elif(length<48 and width<40 and height<39):
 			boxNAme = 'Box 7'
-		box = {'boxName' = boxName}
+		else:
+			boxNAme = 'Box 4'
 
-		responseobj = json.dumps(box, indent = 4)
-		return HttpResponse(responseobj,content_type = "application/json")
+		#box = {'boxName' : boxNAme}
+
+		#responseobj = json.dumps(box)
+		
+		return HttpResponse("boxNAme")
 
 	except Exception as e:
 		print e
