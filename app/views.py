@@ -72,9 +72,9 @@ def url_to_image(url):
 @csrf_exempt
 def fun(request):
 	
-# 	x = json.loads(request.body)
-# 	topimageurl = x['url1']
-# 	frontimageurl = x['url2']
+	x = json.loads(request.body)
+	topimageurl = x['url1']
+	frontimageurl = x['url2']
 # 	#load the image, convert it to grayscale, and blur it slightly
 # 	imagetop = url_to_image(topimageurl)
 # 	detect_coin = imagetop.copy()
@@ -243,7 +243,7 @@ def fun(request):
 
 # 	responseobj = json.dumps(box)
 
-	return HttpResponse("hello")
+	return HttpResponse(frontimageurl)
 
 	
 
