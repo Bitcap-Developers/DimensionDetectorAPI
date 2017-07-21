@@ -64,7 +64,7 @@ def url_to_image(url):
  
 	# return the image
 	return image
-def fun(requests):
+def fun(request):
 
 	topimageurl = request.GET.get("url1")
 	frontimageurl = request.GET.get("url2")
@@ -211,7 +211,7 @@ def fun(requests):
 	# compute the Euclidean distance between the midpoints
 	dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
 	height = dA * pixelsPerMetric
-	return (length,width,height)
+	return  HttpResponse("Parameters are "+length+height+width)
 
 
 
