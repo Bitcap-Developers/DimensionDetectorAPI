@@ -7,6 +7,8 @@ from django.shortcuts import render
 # python object_size.py --image images/example_03.png --width 3.5
 
 # import the necessary packages
+import sys
+sys.path.append('/usr/local/lib/python2.7/site-packages')
 from scipy.spatial import distance as dist
 from imutils import perspective
 from imutils import contours
