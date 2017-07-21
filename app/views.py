@@ -238,11 +238,12 @@ def fun(request):
 		else:
 			boxNAme = 'Box 4'
 
-		#box = {'boxName' : boxNAme}
+		box = {'boxName' : boxNAme}
+		box = json.loads(box)
 
-		#responseobj = json.dumps(box)
+		responseobj = json.dumps(box)
 		
-		return HttpResponse("boxNAme")
+		return HttpResponse(responseobj, content_type='json')
 
 	except Exception as e:
 		print e
