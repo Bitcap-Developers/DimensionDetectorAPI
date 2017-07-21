@@ -67,6 +67,7 @@ def url_to_image(url):
 def fun(request):
 
 	topimageurl = request.GET.get("url1")
+	
 	frontimageurl = request.GET.get("url2")
 	# load the image, convert it to grayscale, and blur it slightly
 	imagetop = url_to_image(topimageurl)
