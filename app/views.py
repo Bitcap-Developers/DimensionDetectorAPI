@@ -75,29 +75,29 @@ def fun(request):
 	x = json.loads(request.body)
 	topimageurl = x['url1']
 	frontimageurl = x['url2']
-# 	#load the image, convert it to grayscale, and blur it slightly
-# 	imagetop = url_to_image(topimageurl)
-# 	detect_coin = imagetop.copy()
-# 	gray = cv2.cvtColor(detect_coin, cv2.COLOR_BGR2GRAY)
-# 	gray = cv2.GaussianBlur(gray, (7, 7), 0)
+	#load the image, convert it to grayscale, and blur it slightly
+	imagetop = url_to_image(topimageurl)
+	detect_coin = imagetop.copy()
+	gray = cv2.cvtColor(detect_coin, cv2.COLOR_BGR2GRAY)
+	gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
-# 	# perform edge detection, then perform a dilation + erosion to
-# 	# close gaps in between object edges
-# 	edged = cv2.Canny(gray, 50, 100)
-# 	edged = cv2.dilate(edged, None, iterations=1)
-# 	edged = cv2.erode(edged, None, iterations=1)
+	# perform edge detection, then perform a dilation + erosion to
+	# close gaps in between object edges
+	edged = cv2.Canny(gray, 50, 100)
+	edged = cv2.dilate(edged, None, iterations=1)
+	edged = cv2.erode(edged, None, iterations=1)
 
-# 	# find contours in the edge map
-# 	cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
-# 	cv2.CHAIN_APPROX_SIMPLE)
-# 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+	# find contours in the edge map
+	cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
+	cv2.CHAIN_APPROX_SIMPLE)
+	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 
-# 	# sort the contours from left-to-right and initialize the
-# 	# 'pixels per metric' calibration variable
-# 	(cnts, _) = contours.sort_contours(cnts)
+	# sort the contours from left-to-right and initialize the
+	# 'pixels per metric' calibration variable
+	(cnts, _) = contours.sort_contours(cnts)
 
-# 	# loop over the contours individually
-# 	c1=cnts[0]
+	# loop over the contours individually
+	c1=cnts[0]
 # 	for c in cnts:
 # 		if(detect(c) == "circle"):
 # 			c1=c
