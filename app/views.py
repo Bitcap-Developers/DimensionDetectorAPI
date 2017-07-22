@@ -189,7 +189,7 @@ def fun(request):
 	
 	boxNAme = ''
 	if(length<23 and width<35 and height<2):
-		boxNAme = 'Envelope 1'
+		boxNAme = 'Box 2'
 	elif(length<34 and width<18 and height<10):
 		boxNAme = 'Box 2'
 	elif(length<34 and width<32 and height<10):
