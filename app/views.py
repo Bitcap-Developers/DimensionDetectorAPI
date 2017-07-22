@@ -109,6 +109,7 @@ def fun(request):
 		if(detect(c1)!="circle"):
 			#returning basic shape
 			print "NO coin Found "
+			return HttpResponse("hello")
 			box = {'boxName' : "Box 2"}
 			box = json.loads(box)
 			responseobj = json.dumps(box)
