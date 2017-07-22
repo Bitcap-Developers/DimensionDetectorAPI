@@ -75,6 +75,7 @@ def fun(request):
 	x = json.loads(request.body)
 	topimageurl = x['url1']
 	frontimageurl = x['url2']
+	print "The url is "+topimageurl
 	#load the image, convert it to grayscale, and blur it slightly
 	imagetop = url_to_image(topimageurl)
 	detect_coin = imagetop.copy()
@@ -95,7 +96,7 @@ def fun(request):
 	# sort the contours from left-to-right and initialize the
 	# 'pixels per metric' calibration variable
 	(cnts, _) = contours.sort_contours(cnts)
-
+	print "Check point 1"
 	# loop over the contours individually
 	c1=cnts[0]
 	for c in cnts:
@@ -122,6 +123,7 @@ def fun(request):
 	for (x, y) in box:
 		cv2.circle(orig, (int(x), int(y)), 5, (0, 0, 255), -1)
 
+	print "Checkpoint 2"
 	# unpack the ordered bounding box, then compute the midpoint
 	# between the top-left and top-right coordinates, followed by
 	# the midpoint between bottom-left and bottom-right coordinates
@@ -156,6 +158,7 @@ def fun(request):
 	for (x, y) in box:
 		cv2.circle(orig, (int(x), int(y)), 5, (0, 0, 255), -1)
 
+	print "Check point 3"
 	# unpack the ordered bounding box, then compute the midpoint
 	# between the top-left and top-right coordinates, followed by
 	# the midpoint between bottom-left and bottom-right coordinates
@@ -208,6 +211,7 @@ def fun(request):
 	for (x, y) in box:
 		cv2.circle(orig, (int(x), int(y)), 5, (0, 0, 255), -1)
 
+	print "Check point 4"
 	# unpack the ordered bounding box, then compute the midpoint
 	# between the top-left and top-right coordinates, followed by
 	# the midpoint between bottom-left and bottom-right coordinates
