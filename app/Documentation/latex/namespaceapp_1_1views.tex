@@ -1,0 +1,66 @@
+\hypertarget{namespaceapp_1_1views}{}\section{app.\+views Namespace Reference}
+\label{namespaceapp_1_1views}\index{app.\+views@{app.\+views}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespaceapp_1_1views_aa2a5b891080c2d264074dbeb3d62a811}{detect} (image)
+\item 
+def \hyperlink{namespaceapp_1_1views_a0b522eae4299db3dad2d12ea2c2ca990}{midpoint} (ptA, ptB)
+\item 
+def \hyperlink{namespaceapp_1_1views_a3972d50362fcf36689652962e5e49667}{url\+\_\+to\+\_\+image} (url)
+\item 
+def \hyperlink{namespaceapp_1_1views_ae9336c0d231671831f86c4d9a43bb32d}{fun} (request)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}Documentation for this module:
+This module takes the url of the image of top face and front face of the box and computes the 
+dimensions of the box and finally returns the type of package that would be required for shipping.
+The code is written in python and image processing is performed with the image processing library opencv.
+the code converts the BGR image to HSV image and then detects the coin in the image using thresholding
+(This can be removed using object detection).Then it calculates a pixel metric which provides conversion between
+pixel and centimeters.  This ratio is then used to detect the dimension of the object
+to be packaged.
+\end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespaceapp_1_1views_aa2a5b891080c2d264074dbeb3d62a811}\label{namespaceapp_1_1views_aa2a5b891080c2d264074dbeb3d62a811}} 
+\index{app\+::views@{app\+::views}!detect@{detect}}
+\index{detect@{detect}!app\+::views@{app\+::views}}
+\subsubsection{\texorpdfstring{detect()}{detect()}}
+{\footnotesize\ttfamily def app.\+views.\+detect (\begin{DoxyParamCaption}\item[{}]{image }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}This function detects the coin to get the pixel metric and then returns the length and width of the box detected.
+This function takes an image as its argument and returns length and width
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceapp_1_1views_ae9336c0d231671831f86c4d9a43bb32d}\label{namespaceapp_1_1views_ae9336c0d231671831f86c4d9a43bb32d}} 
+\index{app\+::views@{app\+::views}!fun@{fun}}
+\index{fun@{fun}!app\+::views@{app\+::views}}
+\subsubsection{\texorpdfstring{fun()}{fun()}}
+{\footnotesize\ttfamily def app.\+views.\+fun (\begin{DoxyParamCaption}\item[{}]{request }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}This function acts as a caller function which processes the request from the server to get the dimensions
+    This function performs the required computation and returns the type of box that would ffit to the user requirements
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceapp_1_1views_a0b522eae4299db3dad2d12ea2c2ca990}\label{namespaceapp_1_1views_a0b522eae4299db3dad2d12ea2c2ca990}} 
+\index{app\+::views@{app\+::views}!midpoint@{midpoint}}
+\index{midpoint@{midpoint}!app\+::views@{app\+::views}}
+\subsubsection{\texorpdfstring{midpoint()}{midpoint()}}
+{\footnotesize\ttfamily def app.\+views.\+midpoint (\begin{DoxyParamCaption}\item[{}]{ptA,  }\item[{}]{ptB }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}This function returns a midpoint of the two points given as input
+\end{DoxyVerb}
+ \mbox{\Hypertarget{namespaceapp_1_1views_a3972d50362fcf36689652962e5e49667}\label{namespaceapp_1_1views_a3972d50362fcf36689652962e5e49667}} 
+\index{app\+::views@{app\+::views}!url\+\_\+to\+\_\+image@{url\+\_\+to\+\_\+image}}
+\index{url\+\_\+to\+\_\+image@{url\+\_\+to\+\_\+image}!app\+::views@{app\+::views}}
+\subsubsection{\texorpdfstring{url\+\_\+to\+\_\+image()}{url\_to\_image()}}
+{\footnotesize\ttfamily def app.\+views.\+url\+\_\+to\+\_\+image (\begin{DoxyParamCaption}\item[{}]{url }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}This function downloads the image from the url and convert it into a format 
+so that it can be processed using OpenCV library. 
+This function downloads the image, convert it to a NumPy array, and then read
+it into OpenCV format
+\end{DoxyVerb}
+ 
