@@ -254,7 +254,7 @@ def fun(request):
 		responseobj = json.dumps(box)
 
 	except Exception as e:
-		print "The exception is "+ e
+		print "The exception is ",e
 
 	return HttpResponse(responseobj)
 
