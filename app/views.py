@@ -109,11 +109,11 @@ def fun(request):
 	# loop over the contours individually
 	c1=cnts[0]
 	c1 = max(cnts, key = cv2.contourArea)
-	if(detect(c1)!="circle"):
-		boxNAme = 'Box 4'
-		responseDict = {'boxName' : boxNAme}
-		jsonResponse=json.dumps(responseDict,indent=4)
-		return HttpResponse(jsonResponse,content_type="application/json")
+	# if(detect(c1)!="circle"):
+	# 	boxNAme = 'Box 4'
+	# 	responseDict = {'boxName' : boxNAme}
+	# 	jsonResponse=json.dumps(responseDict,indent=4)
+	# 	return HttpResponse(jsonResponse,content_type="application/json")
 	
 	orig = imagetop.copy()
 	box = cv2.minAreaRect(c1)
