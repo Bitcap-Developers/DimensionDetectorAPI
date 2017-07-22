@@ -109,11 +109,9 @@ def fun(request):
 		if(detect(c1)!="circle"):
 			#returning basic shape
 			print "NO coin Found "
-			return HttpResponse("hello")
 			box = {'boxName' : "Box 2"}
-			box = json.loads(box)
-			responseobj = json.dumps(box)
-			return HttpResponse(responseobj)
+			responseobj = json.dumps(box,indent=4)
+			return HttpResponse(responseobj,content_type="application/json")
 
 		orig = imagetop.copy()
 		box = cv2.minAreaRect(c1)
