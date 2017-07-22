@@ -111,10 +111,9 @@ def fun(request):
 	c1 = max(cnts, key = cv2.contourArea)
 	if(detect(c1)!="circle"):
 		boxNAme = 'Box 4'
-		box = {'boxName' : boxNAme}
-		box = json.loads(box)
-		responseobj = json.dumps(box)
-		return HttpResponse(responseobj)
+		responseDict = {'boxName' : boxNAme}
+		jsonResponse=json.dumps(responseDict,indent=4)
+		return HttpResponse(jsonResponse,content_type="application/json")
 	orig = imagetop.copy()
 	box = cv2.minAreaRect(c1)
 	box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
@@ -334,7 +333,8 @@ def fun(request):
 		boxNAme = 'Box 7'
 	else:
 		boxNAme = 'Box 4'
+		
 	box = {'boxName' : boxNAme}
-	box = json.loads(box)
-	responseobj = json.dumps(box)
-	return HttpResponse(responseobj)
+	jsonResponse=json.dumps(box,indent=4)
+	return HttpResponse(jsonResponse,content_type="application/json")
+	
