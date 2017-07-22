@@ -114,6 +114,7 @@ def fun(request):
 		responseDict = {'boxName' : boxNAme}
 		jsonResponse=json.dumps(responseDict,indent=4)
 		return HttpResponse(jsonResponse,content_type="application/json")
+	
 	orig = imagetop.copy()
 	box = cv2.minAreaRect(c1)
 	box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
@@ -333,7 +334,8 @@ def fun(request):
 		boxNAme = 'Box 7'
 	else:
 		boxNAme = 'Box 4'
-		
+
+	print "Length is "+length,"Width is"+width,"height is"+height
 	box = {'boxName' : boxNAme}
 	jsonResponse=json.dumps(box,indent=4)
 	return HttpResponse(jsonResponse,content_type="application/json")
