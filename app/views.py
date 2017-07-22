@@ -27,10 +27,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json , requests
 
 def detect(image):
-    """
-    This function detects the coin to get the pixel metric and then returns the length and width of the box detected.
-    This function takes an image as its argument and returns length and width
-    """
+	"""
+	This function detects the coin to get the pixel metric and then returns the length and width of the box detected.
+	This function takes an image as its argument and returns length and width"""
 	src=image.copy()
 	src =cv2.cvtColor(src,cv2.COLOR_BGR2HSV)
 	lower = np.array([40,100,100])
@@ -54,7 +53,7 @@ def detect(image):
 
 	# sort the contours from left-to-right and initialize the
 	# 'pixels per metric' calibration variable
-	(cnts, _) = contours.sort_contours(cnts)	
+	(cnts, _) = contours.sort_contours(cnts)    
 	# loop over the contours individually
 	c1=cnts[0]
 	c1 = max(cnts, key = cv2.contourArea)
@@ -147,18 +146,18 @@ def detect(image):
 	return length,width
 
 def midpoint(ptA, ptB):
-    """This function returns a midpoint of the two points given as input
-    """
+	"""This function returns a midpoint of the two points given as input
+	"""
 	return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
 
 def url_to_image(url):
 	""" 
-    This function downloads the image from the url and convert it into a format 
-    so that it can be processed using OpenCV library. 
-    This function downloads the image, convert it to a NumPy array, and then read
+	This function downloads the image from the url and convert it into a format 
+	so that it can be processed using OpenCV library. 
+	This function downloads the image, convert it to a NumPy array, and then read
 	it into OpenCV format
 	"""
-    resp = urllib.urlopen(url)
+	resp = urllib.urlopen(url)
 
 	image = np.asarray(bytearray(resp.read()), dtype="uint8")
 	image = cv2.imdecode(image, cv2.IMREAD_COLOR)
@@ -169,8 +168,8 @@ def url_to_image(url):
 @csrf_exempt
 def fun(request):
 	""" This function acts as a caller function which processes the request from the server to get the dimensions
-        This function performs the required computation and returns the type of box that would ffit to the user requirements
-    """
+		This function performs the required computation and returns the type of box that would ffit to the user requirements
+	"""
 	x = json.loads(request.body)
 	topimageurl = x['url1']
 	frontimageurl = x['url2']
@@ -181,7 +180,7 @@ def fun(request):
 	length,width=detect(imagetop)
 	
 	imagefront = url_to_image(frontimageurl)
-	length1,width1=detect(imagefront)	
+	length1,width1=detect(imagefront)   
 	
 	if(width1<length1):
 		height=width1
