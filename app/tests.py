@@ -1,10 +1,11 @@
 from django.test import TestCase,Client
+import json
 
 # Create your tests here.
 
 
 class TestDimensionDetector(TestCase):
-	
+
 ## testing the about endpoint for dimensiod detection	
 	def test_aboutEndpoint(self):
 		client=Client()
