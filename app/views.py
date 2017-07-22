@@ -108,6 +108,7 @@ def fun(request):
 		#if no coin found
 		if(detect(c1)!="circle"):
 			#returning basic shape
+			print "NO coin Found "
 			return(23,35,2)
 		orig = imagetop.copy()
 		box = cv2.minAreaRect(c1)
