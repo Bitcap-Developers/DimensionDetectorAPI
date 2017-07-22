@@ -77,6 +77,7 @@ def fun(request):
 	frontimageurl = x['url2']
 	print "The url is "+topimageurl
 	#load the image, convert it to grayscale, and blur it slightly
+	# load the image, convert it to grayscale, and blur it slightly
 	imagetop = url_to_image(topimageurl)
 	src=imagetop.copy()
 	src =cv2.cvtColor(src,cv2.COLOR_BGR2HSV)
@@ -108,6 +109,12 @@ def fun(request):
 	# loop over the contours individually
 	c1=cnts[0]
 	c1 = max(cnts, key = cv2.contourArea)
+	if(detect(c1)!="circle"):
+		boxNAme = 'Box 4'
+		box = {'boxName' : boxNAme}
+		box = json.loads(box)
+		responseobj = json.dumps(box)
+		return HttpResponse(responseobj)
 	orig = imagetop.copy()
 	box = cv2.minAreaRect(c1)
 	box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
@@ -309,6 +316,7 @@ def fun(request):
 		height=width1
 	else:
 		height=length1
+	
 	boxNAme = ''
 	if(length<23 and width<35 and height<2):
 		boxNAme = 'Envelope 1'
@@ -326,34 +334,7 @@ def fun(request):
 		boxNAme = 'Box 7'
 	else:
 		boxNAme = 'Box 4'
-
 	box = {'boxName' : boxNAme}
 	box = json.loads(box)
-
 	responseobj = json.dumps(box)
 	return HttpResponse(responseobj)
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
