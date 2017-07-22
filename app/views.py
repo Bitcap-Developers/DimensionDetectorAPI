@@ -335,7 +335,7 @@ def fun(request):
 	else:
 		boxNAme = 'Box 4'
 
-	print "Length is "+length,"Width is"+width,"height is"+height
+	print "Length is ",length,"Width is ",width,"height is ",height
 	box = {'boxName' : boxNAme}
 	jsonResponse=json.dumps(box,indent=4)
 	return HttpResponse(jsonResponse,content_type="application/json")
