@@ -109,7 +109,11 @@ def fun(request):
 		if(detect(c1)!="circle"):
 			#returning basic shape
 			print "NO coin Found "
-			return(23,35,2)
+			box = {'boxName' : boxNAme}
+			box = json.loads(box)
+			responseobj = json.dumps(box)
+			return HttpResponse(responseobj)
+			
 		orig = imagetop.copy()
 		box = cv2.minAreaRect(c1)
 		box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
