@@ -1,5 +1,5 @@
 ## Dimension Detection API ##
-[![Build Status](https://travis-ci.org/Bitcap-Developers/djangoapp.svg?branch=master)](https://travis-ci.org/Bitcap-Developers/djangoapp)
+[![Build Status](https://travis-ci.org/Bitcap-Developers/DimensionDetectorAPI.svg?branch=master)](https://travis-ci.org/Bitcap-Developers/DimensionDetectorAPI)
 
 
 ----------
