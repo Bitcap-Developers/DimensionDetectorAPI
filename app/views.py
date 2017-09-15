@@ -80,6 +80,7 @@ def detect_coin(image):
     # perform edge detection, then perform a dilation + erosion to
     # close gaps in between object edges
     # find contours in the edge map
+    r = 70
     for label in np.unique(labels):
         # if the label is zero, we are examining the 'background'
         # so simply ignore it
