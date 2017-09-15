@@ -65,7 +65,6 @@ def detect_coin(image):
     """
     src = image
     ### applying thresholding to seperate foreground pixels from background pixels
-    src = cv2.GaussianBlur(src, (9, 9), 0)
     shifted = cv2.pyrMeanShiftFiltering(src, 21, 51)
     gray = cv2.cvtColor(shifted, cv2.COLOR_BGR2GRAY)
     thresh,ret = cv2.threshold(gray, 172, 255,
