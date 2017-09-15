@@ -129,7 +129,6 @@ def detect(image):
     This function detects the coin to get the pixel metric and then returns the length and width of the box detected.
     This function takes an image as its argument and returns length and width
     """
-    
     img_coin = image.copy()
     img_object = image.copy()
     pixelsPerMetric = detect_coin(img_coin)
@@ -187,7 +186,7 @@ def fun(request):
     imagetop = url_to_image(topimageurl)
     length,width=detect(imagetop)
     imagefront = url_to_image(frontimageurl)
-    length1,width1=detect(imagefront)	
+    length1,width1=detect(imagefront)
     if(width1<length1):
         height=width1
     else:
