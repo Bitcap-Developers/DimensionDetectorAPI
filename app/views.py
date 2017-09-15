@@ -121,9 +121,8 @@ def detect_object(image):
     box = perspective.order_points(box)
     return box
 def midpoint(ptA, ptB):
-    """This function returns a midpoint of the two points given as input
-    """
-	return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
+    """This function returns a midpoint of the two points given as input"""
+    return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
 
 def detect(image):
     """
