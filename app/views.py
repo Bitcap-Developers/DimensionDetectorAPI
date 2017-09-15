@@ -130,8 +130,8 @@ def detect(image):
     This function detects the coin to get the pixel metric and then returns the length and width of the box detected.
     This function takes an image as its argument and returns length and width
     """
-    img_coin = image.clone()
-    img_object = image.clone()
+    img_coin = image
+    img_object = image
     pixelsPerMetric = detect_coin(img_coin)
     print pixelsPerMetric
     box = detect_object(img_object)
