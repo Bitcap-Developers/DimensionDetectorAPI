@@ -63,7 +63,7 @@ def detect_coin(image):
     """
     This function detects the coin to get the pixel metric
     """
-    src=image.clone()
+    src=image
     ### applying thresholding to seperate foreground pixels from background pixels
     src = cv2.GaussianBlur(src, (9, 9), 0)
     shifted = cv2.pyrMeanShiftFiltering(src, 21, 51)
@@ -114,7 +114,7 @@ def detect_object(image):
     cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
             cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[1]
-    orig = image.clone()
+    orig = image
     c = max(cnts, key = cv2.contourArea)
     box = cv2.minAreaRect(c)
     box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
