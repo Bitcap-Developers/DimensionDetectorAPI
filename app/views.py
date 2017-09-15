@@ -206,7 +206,7 @@ def fun(request):
     elif(length<48 and width<40 and height<39):
         boxNAme = 'Box 7'
     else:
-        boxNAme = 'Box 4'
+        boxNAme = 'Box 3'
 
     print "Length is ",length,"Width is ",width,"height is ",height
     box = {'boxName' : boxNAme}
