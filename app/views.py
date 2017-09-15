@@ -160,33 +160,32 @@ def detect(image):
     return length,width
 
 def url_to_image(url):
-	""" 
+    """ 
     This function downloads the image from the url and convert it into a format 
     so that it can be processed using OpenCV library. 
     This function downloads the image, convert it to a NumPy array, and then read
-	it into OpenCV format
-	"""
+    it into OpenCV format"""
     resp = urllib.urlopen(url)
 
-	image = np.asarray(bytearray(resp.read()), dtype="uint8")
-	image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+    image = np.asarray(bytearray(resp.read()), dtype="uint8")
+    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
  
-	# return the image
-	return image
+    # return the image
+    return image
 
 @csrf_exempt
 def fun(request):
-	""" This function acts as a caller function which processes the request from the server to get the dimensions
+    """ This function acts as a caller function which processes the request from the server to get the dimensions
         This function performs the required computation and returns the type of box that would ffit to the user requirements
     """
-	x = json.loads(request.body)
-	topimageurl = x['url1']
-	frontimageurl = x['url2']
-	print "The url is "+topimageurl
-	#load the image, convert it to grayscale, and blur it slightly
-	# load the image, convert it to grayscale, and blur it slightly
-	imagetop = url_to_image(topimageurl)
-	length,width=detect(imagetop)
+    x = json.loads(request.body)
+    topimageurl = x['url1']
+    frontimageurl = x['url2']
+    print "The url is "+topimageurl
+    #load the image, convert it to grayscale, and blur it slightly
+    # load the image, convert it to grayscale, and blur it slightly
+    imagetop = url_to_image(topimageurl)
+    length,width=detect(imagetop)
 	
 	imagefront = url_to_image(frontimageurl)
 	length1,width1=detect(imagefront)	
