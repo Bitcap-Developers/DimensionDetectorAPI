@@ -186,35 +186,31 @@ def fun(request):
     # load the image, convert it to grayscale, and blur it slightly
     imagetop = url_to_image(topimageurl)
     length,width=detect(imagetop)
-	
-	imagefront = url_to_image(frontimageurl)
-	length1,width1=detect(imagefront)	
-	
-	if(width1<length1):
-		height=width1
-	else:
-		height=length1
-	
-	boxNAme = ''
-	if(length<23 and width<35 and height<2):
-		boxNAme = 'Envelope 1'
-	elif(length<34 and width<18 and height<10):
-		boxNAme = 'Box 2'
-	elif(length<34 and width<32 and height<10):
-		boxNAme = 'Box 3'
-	elif(length<34 and width<32 and height<18):
-		boxNAme = 'Box 4'
-	elif(length<34 and width<32 and height<34):
-		boxNAme = 'Box 5'
-	elif(length<42 and width<36 and height<37):
-		boxNAme = 'Box 6'
-	elif(length<48 and width<40 and height<39):
-		boxNAme = 'Box 7'
-	else:
-		boxNAme = 'Box 4'
+    imagefront = url_to_image(frontimageurl)
+    length1,width1=detect(imagefront)	
+    if(width1<length1):
+        height=width1
+    else:
+        height=length1
+    boxNAme = ''
+    if(length<23 and width<35 and height<2):
+        boxNAme = 'Envelope 1'
+    elif(length<34 and width<18 and height<10):
+        boxNAme = 'Box 2'
+    elif(length<34 and width<32 and height<10):
+        boxNAme = 'Box 3'
+    elif(length<34 and width<32 and height<18):
+        boxNAme = 'Box 4'
+    elif(length<34 and width<32 and height<34):
+        boxNAme = 'Box 5'
+    elif(length<42 and width<36 and height<37):
+        boxNAme = 'Box 6'
+    elif(length<48 and width<40 and height<39):
+        boxNAme = 'Box 7'
+    else:
+        boxNAme = 'Box 4'
 
-	print "Length is ",length,"Width is ",width,"height is ",height
-	box = {'boxName' : boxNAme}
-	jsonResponse=json.dumps(box,indent=4)
-	return HttpResponse(jsonResponse,content_type="application/json")
-	
+    print "Length is ",length,"Width is ",width,"height is ",height
+    box = {'boxName' : boxNAme}
+    jsonResponse=json.dumps(box,indent=4)
+    return HttpResponse(jsonResponse,content_type="application/json")
