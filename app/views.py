@@ -18,6 +18,9 @@ from imutils import perspective
 from imutils import contours
 import numpy as np
 import urllib
+from skimage.feature import peak_local_max
+from skimage.morphology import watershed
+from scipy import ndimage
 import argparse
 import imutils
 import cv2
@@ -25,139 +28,146 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt 
 import json , requests
+def detect_shape(c):
+    shape = "unidentified"
+    peri = cv2.arcLength(c, True)
+    approx = cv2.approxPolyDP(c, 0.04 * peri, True)
+            # if the shape is a triangle, it will have 3 vertices
+    if len(approx) == 3:
+        shape = "triangle"
+
+    # if the shape has 4 vertices, it is either a square or
+    # a rectangle
+    elif len(approx) == 4:
+        # compute the bounding box of the contour and use the
+        # bounding box to compute the aspect ratio
+        (x, y, w, h) = cv2.boundingRect(approx)
+        ar = w / float(h)
+
+        # a square will have an aspect ratio that is approximately
+        # equal to one, otherwise, the shape is a rectangle
+        shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
+
+    # if the shape is a pentagon, it will have 5 vertices
+    elif len(approx) == 5:
+        shape = "pentagon"
+    #elif len(approx) == 6:
+      #  shape = "hexagon"
+    # otherwise, we assume the shape is a circle
+    else:
+        shape = "circle"
+
+    # return the name of the shape
+    return shape
+def detect_coin(image):
+    """
+    This function detects the coin to get the pixel metric
+    """
+    src=image.copy()
+    ### applying thresholding to seperate foreground pixels from background pixels
+    src = cv2.GaussianBlur(src, (9, 9), 0)
+    shifted = cv2.pyrMeanShiftFiltering(src, 21, 51)
+    gray = cv2.cvtColor(shifted, cv2.COLOR_BGR2GRAY)
+    thresh,ret = cv2.threshold(gray, 172, 255,
+    cv2.THRESH_BINARY)
+    D = ndimage.distance_transform_edt(ret)
+    localMax = peak_local_max(D, indices=False, min_distance=20,
+    labels=ret)
+    # perform a connected component analysis on the local peaks,
+    # using 8-connectivity, then appy the Watershed algorithm
+    markers = ndimage.label(localMax, structure=np.ones((3, 3)))[0]
+    labels = watershed(-D, markers, mask=ret)
+    # perform edge detection, then perform a dilation + erosion to
+    # close gaps in between object edges
+    # find contours in the edge map
+    for label in np.unique(labels):
+        # if the label is zero, we are examining the 'background'
+        # so simply ignore it
+        if label == 0:
+            continue
+        # otherwise, allocate memory for the label region and draw
+        # it on the mask
+        mask = np.zeros(gray.shape, dtype="uint8")
+        mask[labels == label] = 255
+        # detect contours in the mask and grab the largest one
+        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE)[-2]
+        c = max(cnts, key=cv2.contourArea)
+        if(detect_shape(c) != "circle"):
+            continue
+        # draw a circle enclosing the object
+        ((x, y), r) = cv2.minEnclosingCircle(c)
+        cv2.circle(image, (int(x), int(y)), int(r), (0, 255, 0), 2)
+        # show the output image
+    pixelpermetric = 2.25/float(2*r)
+    return pixelpermetric
+def detect_object(image):
+    ## applies grab cut algorithm to seperate foreground pixels from background pixels
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (7, 7), 0)
+
+    # perform edge detection, then perform a dilation + erosion to
+    # close gaps in between object edges
+    edged = cv2.Canny(gray, 50, 100)
+    edged = cv2.dilate(edged, None, iterations=1)
+    cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[1]
+    orig = image.copy()
+    c = max(cnts, key = cv2.contourArea)
+    box = cv2.minAreaRect(c)
+    box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
+    box = np.array(box, dtype="int")
+    box = perspective.order_points(box)
+    return box
+def midpoint(ptA, ptB):
+    """This function returns a midpoint of the two points given as input
+    """
+	return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
 
 def detect(image):
-	"""
-	This function detects the coin to get the pixel metric and then returns the length and width of the box detected.
-	This function takes an image as its argument and returns length and width"""
-	src=image.copy()
-	src =cv2.cvtColor(src,cv2.COLOR_BGR2HSV)
-	lower = np.array([40,100,100])
-	h2=120
-	s2=135
-	v2=135
-	upper = np.array([h2,s2,v2])
-	mask = cv2.inRange(image, lower, upper)
-	output = cv2.bitwise_and(image, image, mask = mask)
-	gray = cv2.GaussianBlur(output, (7, 7), 0)
-	# perform edge detection, then perform a dilation + erosion to
-	# close gaps in between object edges
-	edged = cv2.Canny(gray, 50, 100)
-	edged = cv2.dilate(edged, None, iterations=1)
-	edged = cv2.erode(edged, None, iterations=1)
+    """
+    This function detects the coin to get the pixel metric and then returns the length and width of the box detected.
+    This function takes an image as its argument and returns length and width
+    """
+    
+    img_coin = image.copy()
+    img_object = image.copy()
+    pixelsPerMetric = detect_coin(img_coin)
+    print pixelsPerMetric
+    box = detect_object(img_object)
+    # unpack the ordered bounding box, then compute the midpoint
+    # between the top-left and top-right coordinates, followed by
+    # the midpoint between bottom-left and bottom-right coordinates
+    (tl, tr, br, bl) = box
+    (tltrX, tltrY) = midpoint(tl, tr)
+    (blbrX, blbrY) = midpoint(bl, br)
 
-	# find contours in the edge map
-	cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
-	cv2.CHAIN_APPROX_SIMPLE)
-	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+    # compute the midpoint between the top-left and top-right points,
+    # followed by the midpoint between the top-righ and bottom-right
+    (tlblX, tlblY) = midpoint(tl, bl)
+    (trbrX, trbrY) = midpoint(tr, br)
 
-	# sort the contours from left-to-right and initialize the
-	# 'pixels per metric' calibration variable
-	(cnts, _) = contours.sort_contours(cnts)    
-	# loop over the contours individually
-	c1=cnts[0]
-	c1 = max(cnts, key = cv2.contourArea)
-	
-	orig = image.copy()
-	box = cv2.minAreaRect(c1)
-	box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
-	box = np.array(box, dtype="int")
-
-	# order the points in the contour such that they appear
-	# in top-left, top-right, bottom-right, and bottom-left
-	# order, then draw the outline of the rotated bounding
-	# box
-	box = perspective.order_points(box)
-	cv2.drawContours(orig, [box.astype("int")], -1, (0, 255, 0), 2)
-
-	# loop over the original points and draw them
-	for (x, y) in box:
-		cv2.circle(orig, (int(x), int(y)), 5, (0, 0, 255), -1)
-	
-	# unpack the ordered bounding box, then compute the midpoint
-	# between the top-left and top-right coordinates, followed by
-	# the midpoint between bottom-left and bottom-right coordinates
-	(tl, tr, br, bl) = box
-	(tltrX, tltrY) = midpoint(tl, tr)
-	(blbrX, blbrY) = midpoint(bl, br)
-
-	# compute the midpoint between the top-left and top-right points,
-	# followed by the midpoint between the top-righ and bottom-right
-	(tlblX, tlblY) = midpoint(tl, bl)
-	(trbrX, trbrY) = midpoint(tr, br)
-
-	# compute the Euclidean distance between the midpoints
-	dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
-	dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
-	#initialise pixel matrix
-	pixelsPerMetric = 2.3/dB
-	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	gray = cv2.GaussianBlur(gray, (7, 7), 0)
-
-	# perform edge detection, then perform a dilation + erosion to
-	# close gaps in between object edges
-	edged = cv2.Canny(gray, 50, 100)
-	edged = cv2.dilate(edged, None, iterations=1)
-	edged = cv2.erode(edged, None, iterations=1)
-	
-	cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
-		cv2.CHAIN_APPROX_SIMPLE)
-	cnts = cnts[1]
-	c = max(cnts, key = cv2.contourArea)
-	orig = image.copy()
-	box = cv2.minAreaRect(c)
-	box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
-	box = np.array(box, dtype="int")
-
-	# order the points in the contour such that they appear
-	# in top-left, top-right, bottom-right, and bottom-left
-	# order, then draw the outline of the rotated bounding
-	# box
-	box = perspective.order_points(box)
-	cv2.drawContours(orig, [box.astype("int")], -1, (0, 255, 0), 2)
-
-	# loop over the original points and draw them
-	for (x, y) in box:
-		cv2.circle(orig, (int(x), int(y)), 5, (0, 0, 255), -1)
-	
-	# unpack the ordered bounding box, then compute the midpoint
-	# between the top-left and top-right coordinates, followed by
-	# the midpoint between bottom-left and bottom-right coordinates
-	(tl, tr, br, bl) = box
-	(tltrX, tltrY) = midpoint(tl, tr)
-	(blbrX, blbrY) = midpoint(bl, br)
-
-	# compute the midpoint between the top-left and top-right points,
-	# followed by the midpoint between the top-righ and bottom-right
-	(tlblX, tlblY) = midpoint(tl, bl)
-	(trbrX, trbrY) = midpoint(tr, br)
-
-	
-	# compute the Euclidean distance between the midpoints
-	dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
-	dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
-	# compute the size of the object
-	width = dA * pixelsPerMetric
-	length = dB * pixelsPerMetric
-	if(width>length):
-		temp=width
-		width=length
-		length=temp
-	return length,width
-
-def midpoint(ptA, ptB):
-	"""This function returns a midpoint of the two points given as input
-	"""
-	return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
+    # compute the Euclidean distance between the midpoints
+    dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
+    dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
+    #initialise pixel matrix
+    width = dA * pixelsPerMetric
+    length = dB * pixelsPerMetric
+    if(width>length):
+        temp=width
+        width=length
+        length=temp
+    return length,width
 
 def url_to_image(url):
 	""" 
-	This function downloads the image from the url and convert it into a format 
-	so that it can be processed using OpenCV library. 
-	This function downloads the image, convert it to a NumPy array, and then read
+    This function downloads the image from the url and convert it into a format 
+    so that it can be processed using OpenCV library. 
+    This function downloads the image, convert it to a NumPy array, and then read
 	it into OpenCV format
 	"""
-	resp = urllib.urlopen(url)
+    resp = urllib.urlopen(url)
 
 	image = np.asarray(bytearray(resp.read()), dtype="uint8")
 	image = cv2.imdecode(image, cv2.IMREAD_COLOR)
@@ -168,8 +178,8 @@ def url_to_image(url):
 @csrf_exempt
 def fun(request):
 	""" This function acts as a caller function which processes the request from the server to get the dimensions
-		This function performs the required computation and returns the type of box that would ffit to the user requirements
-	"""
+        This function performs the required computation and returns the type of box that would ffit to the user requirements
+    """
 	x = json.loads(request.body)
 	topimageurl = x['url1']
 	frontimageurl = x['url2']
@@ -180,7 +190,7 @@ def fun(request):
 	length,width=detect(imagetop)
 	
 	imagefront = url_to_image(frontimageurl)
-	length1,width1=detect(imagefront)   
+	length1,width1=detect(imagefront)	
 	
 	if(width1<length1):
 		height=width1
@@ -189,7 +199,7 @@ def fun(request):
 	
 	boxNAme = ''
 	if(length<23 and width<35 and height<2):
-		boxNAme = 'Box 2'
+		boxNAme = 'Envelope 1'
 	elif(length<34 and width<18 and height<10):
 		boxNAme = 'Box 2'
 	elif(length<34 and width<32 and height<10):
