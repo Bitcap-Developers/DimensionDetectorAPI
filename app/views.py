@@ -63,7 +63,7 @@ def detect_coin(image):
     """
     This function detects the coin to get the pixel metric
     """
-    src=image
+    src = image
     ### applying thresholding to seperate foreground pixels from background pixels
     src = cv2.GaussianBlur(src, (9, 9), 0)
     shifted = cv2.pyrMeanShiftFiltering(src, 21, 51)
@@ -98,7 +98,6 @@ def detect_coin(image):
             continue
         # draw a circle enclosing the object
         ((x, y), r) = cv2.minEnclosingCircle(c)
-        cv2.circle(image, (int(x), int(y)), int(r), (0, 255, 0), 2)
         # show the output image
     pixelpermetric = 2.25/float(2*r)
     return pixelpermetric
@@ -125,13 +124,11 @@ def midpoint(ptA, ptB):
     """This function returns a midpoint of the two points given as input"""
     return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
 
-def detect(image):
+def detect(img_coin,img_object):
     """
     This function detects the coin to get the pixel metric and then returns the length and width of the box detected.
     This function takes an image as its argument and returns length and width
     """
-    img_coin = image
-    img_object = image
     pixelsPerMetric = detect_coin(img_coin)
     print pixelsPerMetric
     box = detect_object(img_object)
@@ -184,10 +181,12 @@ def fun(request):
     print "The url is "+topimageurl
     #load the image, convert it to grayscale, and blur it slightly
     # load the image, convert it to grayscale, and blur it slightly
-    imagetop = url_to_image(topimageurl)
-    length,width=detect(imagetop)
-    imagefront = url_to_image(frontimageurl)
-    length1,width1=detect(imagefront)
+    imagetopc = url_to_image(topimageurl)
+    imagetopo = url_to_image(topimageurl)
+    length,width=detect(imagetopc,imagetopo)
+    imagefrontc = url_to_image(frontimageurl)
+    imagefronto = url_to_image(frontimageurl)
+    length1,width1=detect(imagefrontc,imagefronto)
     if(width1<length1):
         height=width1
     else:
